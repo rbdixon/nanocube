@@ -56,6 +56,12 @@ If your system has tcmalloc installed, we suggest linking nanocubes with it.
 For example
 
     $ CXX=g++-4.8 ./configure LIBS=<path-to-tcmalloc>/libtcmalloc_minimal.a
+    
+### Building with Docker
+
+An alternate build process is available via Docker:
+
+	$ docker build -t <yourname>/nanocube:v0 .
 
 ## Loading a CSV file into a nanocube
 
@@ -105,6 +111,24 @@ viewer
 For this example we assume you are running everything on your
 localhost. Modify `config.json` accordingly in the `web` folder for
 different setups.
+
+### Loading a CSV File and Running with Docker
+
+An alternate process is available via Docker. Data and options are POST'ed to a simple server using curl.
+
+First start the nanocube Docker container you built previously:
+
+	$ docker run -d -p 8000:8000 -p 29512:29512 <yourname>/nanocube:v0
+
+If you are executing in a boot2docker environment pass the `DOCKER_HOST` environment variable through:
+
+	$ docker run -d -p 8000:8000 -p 29512:29512 -e DOCKER_HOST=$DOCKER_HOST <yourname>/nanocube:v0
+
+Then execute the POST to push the data and options:
+
+	$ curl -D - -F opts='--catcol="Primary Type"' -F data=@scripts/crime50k.csv http://$DOCKER_IP:8000
+
+Then open a browser to `http://$DOCKER_IP:8000`.
 
 ## Further Details
 
