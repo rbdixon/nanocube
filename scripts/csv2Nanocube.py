@@ -132,7 +132,12 @@ class NanocubeInput:
         config['latlonbox'] = { 'min':self.minlatlon,
                                 'max':self.maxlatlon }
         
-        config['url'] = 'http://%s:29512'%(socket.getfqdn())
+        # Support accessing a server hosted in docker
+        host = os.getenv('DOCKER_HOST', socket.getfqdn())
+        host = re.sub('tcp://', '', host)
+        host = re.sub(':.*', '', host)
+        config['url'] = 'http://%s:29512'%(host)
+
         config['title'] = self.name
         config['tilesurl'] = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
 
